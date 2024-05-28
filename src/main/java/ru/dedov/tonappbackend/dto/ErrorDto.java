@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * DTO для вывода текста ошибки
  *
  * @author Alexander Dedov
  * @since 25.05.2024

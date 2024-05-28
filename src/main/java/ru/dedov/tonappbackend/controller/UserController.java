@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.dedov.tonappbackend.dto.TokenDeductionRequestDto;
-import ru.dedov.tonappbackend.dto.UserDto;
+import ru.dedov.tonappbackend.model.entity.User;
 import ru.dedov.tonappbackend.service.UserService;
 
 /**
@@ -30,18 +30,18 @@ public class UserController {
 	}
 
 	@PostMapping("/user")
-	public ResponseEntity<String> createUser(@RequestBody UserDto userDto) {
-		return userService.saveUser(userDto);
+	public ResponseEntity<?> createUser(@RequestBody User user) {
+		return userService.saveUser(user);
 	}
 
-	@PutMapping("/user/{id}")
-	public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-		return userService.updateUser(id, userDto);
+	@PutMapping("/user")
+	public ResponseEntity<?> updateUser(@RequestBody User user) {
+		return userService.updateUser(user);
 	}
 
-	@GetMapping("/user/{id}")
-	public ResponseEntity<UserDto> findUser(@PathVariable Long id) {
-		return userService.findUserById(id);
+	@GetMapping("/user/{accountId}")
+	public ResponseEntity<User> findUser(@PathVariable String accountId) {
+		return userService.findUserByAccountId(accountId);
 	}
 
 }

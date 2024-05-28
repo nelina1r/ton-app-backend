@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.dedov.tonappbackend.model.entity.User;
 
+import java.util.Optional;
+
 /**
  * Репозиторий для пользователей
  *
@@ -11,9 +13,9 @@ import ru.dedov.tonappbackend.model.entity.User;
  * @since 23.05.2024
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
 
-	boolean existsByUsername(String username);
+	boolean existsByAccountId(String accountId);
 
-	boolean existsById(Long id);
+	Optional<User> findByAccountId(String accountId);
 }

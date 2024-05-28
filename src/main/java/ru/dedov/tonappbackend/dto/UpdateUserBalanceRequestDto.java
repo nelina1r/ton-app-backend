@@ -5,17 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO для запроса баланса по конкретному токену и id аккаунта
+ * TODO Class Description
  *
  * @author Alexander Dedov
- * @since 25.05.2024
+ * @since 26.05.2024
  */
 @Data
 @NoArgsConstructor
-public class TokenBalanceRequestDto {
+public class UpdateUserBalanceRequestDto {
 
 	@JsonProperty("account_id")
 	private String accountId;
-	@JsonProperty("token_symbol")
-	private String tokenSymbol;
+	@JsonProperty("jetton_id")
+	private String jettonId;
+	@JsonProperty("start_date")
+	private Long startDate;
+	@JsonProperty("end_date")
+	private Long endDate;
 }

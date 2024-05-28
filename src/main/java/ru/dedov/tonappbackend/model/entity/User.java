@@ -19,11 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "username")
-	private String username;
+	@Column(name = "account_id")
+	private String accountId;
 
 	@Column(name = "ton_balance")
 	private Double tonBalance;

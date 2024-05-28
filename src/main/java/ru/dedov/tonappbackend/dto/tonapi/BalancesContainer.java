@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * TODO Class Description
+ * DTO со списком балансов
  *
  * @author Alexander Dedov
  * @since 25.05.2024

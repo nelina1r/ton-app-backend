@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * DTO для вывода информации об успешной операции
  *
  * @author Alexander Dedov
  * @since 25.05.2024

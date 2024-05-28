@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * Jetton DTO
  *
  * @author Alexander Dedov
  * @since 25.05.2024

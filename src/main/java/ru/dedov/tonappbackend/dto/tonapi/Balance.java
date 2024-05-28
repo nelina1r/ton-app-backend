@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * DTO баланса
  *
  * @author Alexander Dedov
  * @since 25.05.2024

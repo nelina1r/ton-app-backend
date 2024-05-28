@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import ru.dedov.tonappbackend.dto.ErrorDto;
 import ru.dedov.tonappbackend.dto.SuccessDto;
 import ru.dedov.tonappbackend.dto.TokenDeductionRequestDto;
-import ru.dedov.tonappbackend.dto.UserDto;
-import ru.dedov.tonappbackend.mapper.UserMapper;
 import ru.dedov.tonappbackend.model.entity.User;
 import ru.dedov.tonappbackend.model.repository.UserRepository;
 
@@ -23,12 +21,10 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-	private final UserMapper userMapper;
 	private final UserRepository userRepository;
 
 	@Autowired
-	public UserService(UserMapper userMapper, UserRepository userRepository) {
-		this.userMapper = userMapper;
+	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -36,42 +32,71 @@ public class UserService {
 	 * Сохранить пользователя.
 	 * Если пользователь с таким username уже существует - не сохраняем
 	 */
-	public ResponseEntity<String> saveUser(UserDto userDto) {
-		User user = userMapper.toEntity(userDto);
-		String username = user.getUsername();
-		if (userRepository.existsByUsername(username)) {
-			return ResponseEntity.badRequest().body("user with username = " + username + " already exist");
+	public ResponseEntity<?> saveUser(User user) {
+		String accountId = user.getAccountId();
+		if (userRepository.existsByAccountId(accountId)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+				new ErrorDto("user with accountId = " + accountId + " already exist")
+			);
 		}
 		userRepository.save(user);
-		return ResponseEntity.ok("user with username = " + username + " saved successfully");
+		return ResponseEntity.ok(
+			new SuccessDto(
+				true,
+				"user with accountId = " + accountId + " saved successfully"
+			)
+		);
 	}
 
 	/**
 	 * Найти пользователя по id.
 	 * Если пользователя с таким id не существует - 404
 	 */
-	public ResponseEntity<UserDto> findUserById(Long id) {
-		Optional<User> optionalUser = userRepository.findById(id);
+	public ResponseEntity<User> findUserByAccountId(String accountId) {
+		Optional<User> optionalUser = userRepository.findByAccountId(accountId);
 		return optionalUser
-			.map(user -> ResponseEntity.ok(userMapper.toDto(user)))
+			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
+	}
+
+	public User increaseUserBalanceByAccountId(String accountId, Double amount) {
+		Optional<User> optionalUser = userRepository.findByAccountId(accountId);
+		if (optionalUser.isPresent()) {
+			User user = optionalUser.get();
+			user.setAccountBalance(user.getAccountBalance() + (amount / 1e9));
+			userRepository.save(user);
+			return user;
+		}
+		return new User();
 	}
 
 	/**
 	 * Обновляем пользователя по id
 	 */
-	public ResponseEntity<String> updateUser(Long id, UserDto userDto) {
-		User user = userMapper.toEntity(userDto);
-		if (userRepository.existsById(id)) {
-			user.setId(id);
+	public ResponseEntity<?> updateUser(User user) {
+		String accountId = user.getAccountId();
+		if (userRepository.existsByAccountId(accountId)) {
 			userRepository.save(user);
-			return ResponseEntity.ok("user with id = " + id + " updated successfully");
+			return ResponseEntity.ok(
+				new SuccessDto(
+					true,
+					"user with id = " + accountId + " updated successfully"
+				)
+			);
 		}
-		return ResponseEntity.badRequest().body("user with id = " + id + " not exist");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+			new ErrorDto("user with id = " + accountId + " not exist"
+			)
+		);
 	}
 
+	/**
+	 * Списать у пользователя с id == userId с баланса deductionAmount токенов
+	 *
+	 * @param deductionRequestDto accountId + deductionAmount
+	 */
 	public ResponseEntity<?> deductTokenFromUser(TokenDeductionRequestDto deductionRequestDto) {
-		Optional<User> optionalUser = userRepository.findById(deductionRequestDto.getUserId());
+		Optional<User> optionalUser = userRepository.findByAccountId(deductionRequestDto.getAccountId());
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
 			if (user.getAccountBalance().compareTo(deductionRequestDto.getDeductionAmount()) >= 0) {
@@ -89,7 +114,7 @@ public class UserService {
 			);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-			new ErrorDto("user with id = " + deductionRequestDto.getUserId() + " not found")
+			new ErrorDto("user with accountId = " + deductionRequestDto.getAccountId() + " not found")
 		);
 	}
 }

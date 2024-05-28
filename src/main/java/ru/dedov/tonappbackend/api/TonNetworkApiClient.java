@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dedov.tonappbackend.config.TonApiClientConfig;
 import ru.dedov.tonappbackend.dto.tonapi.BalancesContainer;
+import ru.dedov.tonappbackend.dto.tonapi.EventsContainer;
 
 /**
  * Feign Client для обращения к TON Api
@@ -22,4 +23,11 @@ public interface TonNetworkApiClient {
 
 	@GetMapping("/accounts/{account_id}/jettons")
 	BalancesContainer getBalancesById(@PathVariable("account_id") String accountId);
+
+	@GetMapping("/accounts/{account_id}/jettons/{jetton_id}/history?limit={limit}&start_date={start_date}&end_date={end_date}")
+	EventsContainer getEventsByParameters(@PathVariable("account_id") String accountId,
+										  @PathVariable("jetton_id") String jettonId,
+										  @PathVariable("limit") Long limit,
+										  @PathVariable("start_date") Long startDate,
+										  @PathVariable("end_date") Long endDate);
 }

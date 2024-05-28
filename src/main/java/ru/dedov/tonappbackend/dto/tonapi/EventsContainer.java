@@ -3,16 +3,17 @@ package ru.dedov.tonappbackend.dto.tonapi;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
- * Lock DTO
+ * DTO со списком ивентов
  *
  * @author Alexander Dedov
- * @since 25.05.2024
+ * @since 26.05.2024
  */
 @Data
 @NoArgsConstructor
-public class Lock {
+public class EventsContainer {
 
-	private String amount;
-	private long till;
+	private List<Event> events;
 }

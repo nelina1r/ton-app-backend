@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * WalletAddress DTO
  *
  * @author Alexander Dedov
  * @since 25.05.2024

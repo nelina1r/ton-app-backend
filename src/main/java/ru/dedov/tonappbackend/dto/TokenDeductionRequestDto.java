@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * DTO для запроса списания токенов с баланса
  *
  * @author Alexander Dedov
  * @since 25.05.2024
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenDeductionRequestDto {
 
-	@JsonProperty("user_id")
-	private Long userId;
+	@JsonProperty("account_id")
+	private String accountId;
 	@JsonProperty("deduction_amount")
 	private Double deductionAmount;
 }

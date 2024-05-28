@@ -2,11 +2,9 @@ package ru.dedov.tonappbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.dedov.tonappbackend.dto.TokenBalanceRequestDto;
+import ru.dedov.tonappbackend.dto.UpdateUserBalanceRequestDto;
 import ru.dedov.tonappbackend.service.TonService;
 
 /**
@@ -29,5 +27,12 @@ public class TonApiController {
 	@GetMapping("/get_token_balance")
 	public ResponseEntity<?> getTokenBalance(@RequestBody TokenBalanceRequestDto balanceRequestDto) {
 		return tonService.getTokenBalance(balanceRequestDto);
+	}
+
+	@PostMapping("/update_balance_after_transaction")
+	public ResponseEntity<?> updateBalanceAfterTransaction(@RequestBody UpdateUserBalanceRequestDto updateDto)
+		throws InterruptedException
+	{
+		return tonService.processUserBalanceAfterSuccessfulTransaction(updateDto);
 	}
 }

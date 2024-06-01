@@ -2,6 +2,7 @@ package ru.dedov.tonappbackend.dto.tonapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Event {
 
 	@JsonProperty("event_id")

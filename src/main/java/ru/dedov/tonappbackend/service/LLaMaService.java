@@ -21,7 +21,8 @@ public class LLaMaService {
 
 	public ResponseEntity<?> generateAnswerByLLaMa(LLaMaRequestDto lLaMaRequestDto) {
 		ModelParameters modelParameters = new ModelParameters()
-			.setModelFilePath("C:\\models\\mistral-7b-instruct-v0.2.Q4_K_M.gguf");
+			.setModelFilePath("C:\\models\\mistral-7b-instruct-v0.2.Q4_K_M.gguf")
+			.setNGpuLayers(43);
 		StringBuilder result = new StringBuilder();
 		try (LlamaModel model = new LlamaModel(modelParameters)) {
 			InferenceParameters inferenceParameters = new InferenceParameters(composePrompt(lLaMaRequestDto))
@@ -40,11 +41,11 @@ public class LLaMaService {
 	private String composePrompt(LLaMaRequestDto requestDto) {
 		return String.format(
 			"""
-				Вы - помощник, которому дали следующий текст и задали вопрос на его основе.\s
-				Используйте текст, чтобы ответить на вопрос как можно точнее.\s
-				Текст: %s\s
-				Вопрос: %s\s
-				Ответ:""",
+				You are an assistant who was given the following text and asked a question based on it.\s
+				Use the text to answer the question as accurately as possible.\s
+				Text: %s\s
+				Question: %s\s
+				Answer:""",
 			requestDto.getText(),
 			requestDto.getQuestion()
 		);

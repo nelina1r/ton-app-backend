@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dedov.tonappbackend.config.TonApiClientConfig;
+import ru.dedov.tonappbackend.dto.tonapi.Account;
 import ru.dedov.tonappbackend.dto.tonapi.BalancesContainer;
 import ru.dedov.tonappbackend.dto.tonapi.EventsContainer;
 
@@ -14,7 +15,7 @@ import ru.dedov.tonappbackend.dto.tonapi.EventsContainer;
  * @author Alexander Dedov
  * @since 24.05.2024
  */
-@FeignClient(name = "tonApiClient", url = "${ton-api.base-url.net}", configuration = TonApiClientConfig.class)
+@FeignClient(name = "tonApiClient", url = "${ton-api.base-url.test-net}", configuration = TonApiClientConfig.class)
 public interface TonNetworkApiClient {
 
 	@GetMapping("/accounts/{account_id}/jettons")
@@ -30,4 +31,7 @@ public interface TonNetworkApiClient {
 										  @PathVariable("limit") Long limit,
 										  @PathVariable("start_date") Long startDate,
 										  @PathVariable("end_date") Long endDate);
+
+	@GetMapping("/accounts/{account_id}")
+	Account getAccountById(@PathVariable("account_id") String accountId);
 }

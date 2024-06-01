@@ -17,9 +17,10 @@ import ru.dedov.tonappbackend.dto.SuccessDto;
  * @since 28.05.2024
  */
 @Service
-public class LLaMaService {
+public class LLaMaService extends AbstractService{
 
 	public ResponseEntity<?> generateAnswerByLLaMa(LLaMaRequestDto lLaMaRequestDto) {
+
 		ModelParameters modelParameters = new ModelParameters()
 			.setModelFilePath("C:\\models\\mistral-7b-instruct-v0.2.Q4_K_M.gguf")
 			.setNGpuLayers(43);
@@ -34,7 +35,7 @@ public class LLaMaService {
 			}
 		}
 		return ResponseEntity.ok(
-			new SuccessDto(true, result.toString())
+			newSuccessDtoWithMessage(result.toString())
 		);
 	}
 

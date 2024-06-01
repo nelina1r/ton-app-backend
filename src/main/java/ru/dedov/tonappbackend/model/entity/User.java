@@ -1,5 +1,6 @@
 package ru.dedov.tonappbackend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,12 +21,15 @@ public class User {
 
 	@Id
 	@Column(name = "account_id")
+	@JsonProperty("account_id")
 	private String accountId;
 
 	@Column(name = "ton_balance")
-	private Double tonBalance;
+	@JsonProperty("ton_balance")
+	private Double tonBalance = 0.0;
 
 	@Column(name = "account_balance")
-	private Double accountBalance;
+	@JsonProperty("account_balance")
+	private Double accountBalance = 0.0;
 
 }

@@ -1,11 +1,11 @@
 package ru.dedov.tonappbackend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.dedov.tonappbackend.dto.LLaMaRequestDto;
 import ru.dedov.tonappbackend.service.LLaMaService;
 
@@ -15,19 +15,23 @@ import ru.dedov.tonappbackend.service.LLaMaService;
  * @author Alexander Dedov
  * @since 28.05.2024
  */
+@Log
 @RestController
 @RequestMapping("api/v1")
-public class AnswerGenerationController {
+public class GenerationController {
 
 	private final LLaMaService lLaMaService;
 
 	@Autowired
-	public AnswerGenerationController(LLaMaService lLaMaService) {
+	public GenerationController(LLaMaService lLaMaService) {
 		this.lLaMaService = lLaMaService;
 	}
 
-	@GetMapping("/generate_answer_on_text")
-	public ResponseEntity<?> generateAnswer(@RequestBody LLaMaRequestDto lLaMaRequestDto) {
+	@Operation(summary = "генерация ответа от модели")
+	@PostMapping("/generate")
+	public ResponseEntity<?> generateAnswer(@Valid @RequestBody LLaMaRequestDto lLaMaRequestDto) {
+		log.info("accepted POST request method generate answer by model with request: "
+			+ lLaMaRequestDto.toString());
 		return lLaMaService.generateAnswerByLLaMa(lLaMaRequestDto);
 	}
 }

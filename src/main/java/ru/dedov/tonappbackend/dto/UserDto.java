@@ -6,23 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO Class Description
+ * DTO сущности Пользователь
  *
  * @author Alexander Dedov
- * @since 26.05.2024
+ * @since 01.06.2024
  */
 @Data
 @NoArgsConstructor
-public class UpdateUserBalanceRequestDto {
+public class UserDto {
 
 	@NotNull(message = "account_id cannot be null")
 	@JsonProperty("account_id")
 	private String accountId;
-	@NotNull(message = "jetton_id cannot be null")
-	@JsonProperty("jetton_id")
-	private String jettonId;
-	@JsonProperty("start_date")
-	private Long startDate;
-	@JsonProperty("end_date")
-	private Long endDate;
 }

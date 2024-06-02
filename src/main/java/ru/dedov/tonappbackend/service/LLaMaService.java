@@ -17,7 +17,7 @@ import ru.dedov.tonappbackend.dto.SuccessDto;
  * @since 28.05.2024
  */
 @Service
-public class LLaMaService extends AbstractService{
+public class LLaMaService extends AbstractService {
 
 	public ResponseEntity<?> generateAnswerByLLaMa(LLaMaRequestDto lLaMaRequestDto) {
 

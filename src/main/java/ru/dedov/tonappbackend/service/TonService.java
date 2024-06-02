@@ -21,7 +21,7 @@ import java.util.Optional;
  * @since 25.05.2024
  */
 @Service
-public class TonService extends AbstractService{
+public class TonService extends AbstractService {
 
 	private static final int MAX_RETRY = 12;
 

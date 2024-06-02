@@ -13,7 +13,6 @@ import ru.dedov.tonappbackend.mapper.UserMapper;
 import ru.dedov.tonappbackend.model.entity.User;
 import ru.dedov.tonappbackend.model.repository.UserRepository;
 
-import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.util.Optional;
 
 /**
@@ -23,7 +22,7 @@ import java.util.Optional;
  * @since 23.05.2024
  */
 @Service
-public class UserService extends AbstractService{
+public class UserService extends AbstractService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
@@ -46,9 +45,7 @@ public class UserService extends AbstractService{
 		String accountId = user.getAccountId();
 		if (userRepository.existsByAccountId(accountId)) {
 			User actualUser = userRepository.findByAccountId(accountId).get();
-			return ResponseEntity.ok(
-				actualUser
-			);
+			return ResponseEntity.ok(actualUser);
 		}
 		Account account = tonNetworkApiClient.getAccountById(accountId);
 		user.setTonBalance(convertFromNanoCoins(account.getBalance().doubleValue()));

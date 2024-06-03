@@ -13,7 +13,7 @@ public abstract class AbstractService {
 
 	/**
 	 * @param message передаваемое сообщение
-	 * @return
+	 * @return ErrorDto
 	 */
 	protected ErrorDto newErrorDtoWithMessage(String message) {
 		return ErrorDto.builder()

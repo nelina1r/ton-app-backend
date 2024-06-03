@@ -8,7 +8,6 @@ import de.kherud.llama.args.MiroStat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.dedov.tonappbackend.dto.LLaMaRequestDto;
-import ru.dedov.tonappbackend.dto.SuccessDto;
 
 /**
  * Сервис для работы с моделью LLaMa

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- *
+ * Global Exception Handler
  *
  * @author Alexander Dedov
  * @since 02.06.2024
@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	/**
+	 * @param ex ексепшн, выбрасываемый в случае если не пройдена валидация входных параметров
+	 * @return 404 с текстом ошибки
+	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
 		String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();

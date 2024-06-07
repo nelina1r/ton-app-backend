@@ -1,5 +1,6 @@
 package ru.dedov.tonappbackend.config;
 
+import feign.Logger;
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,5 +21,10 @@ public class TonApiClientConfig {
 	@Bean
 	public RequestInterceptor requestInterceptor() {
 		return requestTemplate -> requestTemplate.header("Authorization", "Bearer " + authHeaderSecret);
+	}
+
+	@Bean
+	Logger.Level feignLoggerLevel() {
+		return Logger.Level.FULL;
 	}
 }

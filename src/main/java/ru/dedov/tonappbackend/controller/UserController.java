@@ -43,8 +43,8 @@ public class UserController {
 		return userService.saveOrGetUser(userDto);
 	}
 
-	// @Operation(summary = "обновить пользователя по accountId")
-	// @PutMapping("/user")
+	@Operation(summary = "обновить пользователя по accountId")
+	@PutMapping("/user")
 	public ResponseEntity<?> updateUser(@RequestBody User user) {
 		log.info("accepted PUT request method update user: " + user.toString());
 		return userService.updateUser(user);

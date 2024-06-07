@@ -18,4 +18,6 @@ ton-api:
     net: "https://tonapi.io/v2"
     test-net: "https://testnet.tonapi.io/v2"
 
+server:
+  port: 8081
 

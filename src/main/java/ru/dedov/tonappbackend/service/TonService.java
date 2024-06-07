@@ -1,5 +1,6 @@
 package ru.dedov.tonappbackend.service;
 
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dedov.tonappbackend.api.TonNetworkApiClient;
 import ru.dedov.tonappbackend.dto.*;
 import ru.dedov.tonappbackend.dto.tonapi.*;
+import ru.dedov.tonappbackend.exceptions.EventsNotFoundException;
 import ru.dedov.tonappbackend.model.entity.User;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.util.Optional;
  * @author Alexander Dedov
  * @since 25.05.2024
  */
+@Log
 @Service
 public class TonService extends AbstractService {
 
@@ -36,12 +39,13 @@ public class TonService extends AbstractService {
 
 	/**
 	 * Метод возвращает информацию о балансе (количеству токенов) по symbol токена
-	 * @param balanceRequestDto accountId + tokenSymbol
+	 * @param accountId accountId
+	 * @param tokenSymbol tokenSymbol
 	 */
-	public ResponseEntity<?> getTokenBalance(TokenBalanceRequestDto balanceRequestDto) {
-		BalancesContainer balancesContainer = tonNetworkApiClient.getBalancesById(balanceRequestDto.getAccountId());
+	public ResponseEntity<?> getTokenBalance(String accountId, String tokenSymbol) {
+		BalancesContainer balancesContainer = tonNetworkApiClient.getBalancesById(accountId);
 		Optional<Balance> optionalTokenBalance = balancesContainer.getBalances().stream()
-			.filter(balance -> balance.getJetton().getSymbol().equals(balanceRequestDto.getTokenSymbol()))
+			.filter(balance -> balance.getJetton().getSymbol().equals(tokenSymbol))
 			.findFirst();
 		if (optionalTokenBalance.isPresent()) {
 			Balance tokenBalance = optionalTokenBalance.get();
@@ -53,18 +57,21 @@ public class TonService extends AbstractService {
 			);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-			newErrorDtoWithMessage("token " + balanceRequestDto.getTokenSymbol() + " not found")
+			newErrorDtoWithMessage("token " + tokenSymbol + " not found")
 		);
 	}
 
 	@Transactional
 	public ResponseEntity<?> processUserBalanceAfterSuccessfulTransaction(UpdateUserBalanceRequestDto updateDto)
-		throws InterruptedException
+		throws InterruptedException, EventsNotFoundException
 	{
-		Event firstTakenEvent = getNewestEvent(updateDto);
+		Event firstTakenEvent = getEventsByTonApi(updateDto).getEvents().get(0);
+		log.info("firstTakenEvent = " + firstTakenEvent);
 		for (int i = 0; i < MAX_RETRY; i++) {
-			Event expectedNewestEvent = getNewestEvent(updateDto);
+			Event expectedNewestEvent = getEventsByTonApi(updateDto).getEvents().get(0);
+			log.info(i + " try to get newestEvent, now candidate is " + expectedNewestEvent);
 			if (!firstTakenEvent.equals(expectedNewestEvent)) {
+				log.info("REAL newest event is " + expectedNewestEvent);
 				Optional<Action> optionalAction = expectedNewestEvent.getActions().stream()
 					.filter(filteringAction ->
 						filteringAction.getType().equals("JettonTransfer") && filteringAction.getStatus().equals("ok"))
@@ -87,19 +94,23 @@ public class TonService extends AbstractService {
 		);
 	}
 
-	public Event getNewestEvent(UpdateUserBalanceRequestDto updateDto) {
+	public EventsContainer getEventsByTonApi(UpdateUserBalanceRequestDto updateDto) {
 		LocalDateTime dateTimeNow = LocalDateTime.now();
 		EventsContainer eventsContainer = tonNetworkApiClient.getEventsByParameters(
 			updateDto.getAccountId(),
 			updateDto.getJettonId(),
-			1L,
+			5L,
+			updateDto.getEndDate() == null
+				? dateTimeNow.minusMinutes(120).atZone(ZoneId.systemDefault()).toEpochSecond()
+				: updateDto.getStartDate(),
 			updateDto.getStartDate() == null
 				? dateTimeNow.atZone(ZoneId.systemDefault()).toEpochSecond()
-				: updateDto.getStartDate(),
-			updateDto.getEndDate() == null
-				? dateTimeNow.plusMinutes(120).atZone(ZoneId.systemDefault()).toEpochSecond()
 				: updateDto.getEndDate()
 		);
-		return eventsContainer.getEvents().get(0);
+		if (eventsContainer.getEvents().isEmpty()) {
+			log.info("events not found");
+			throw new EventsNotFoundException("events not found");
+		}
+		return eventsContainer;
 	}
 }

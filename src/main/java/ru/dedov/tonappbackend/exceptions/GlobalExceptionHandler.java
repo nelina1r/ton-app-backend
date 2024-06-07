@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
 		String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(EventsNotFoundException.class)
+	public ResponseEntity<String> handleEventsNotFountException(EventsNotFoundException ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }
